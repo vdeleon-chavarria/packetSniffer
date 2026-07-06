@@ -344,68 +344,56 @@ def start_sniffer():
     Create a raw socket and continuously capture packets.
     """
 
-    # --------------------------------------------
     # TODO:
-    # Create raw socket
-    # --------------------------------------------
-
+    # 1. Create raw socket
     # Example:
     # sniffer = socket.socket(...)
+    sniffer = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_IP)
 
-    # --------------------------------------------
-    # TODO:
-    # Configure socket
-    # --------------------------------------------
+    # 2. Configure socket
+    sniffer.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)
 
     print("Packet sniffer started...\n")
 
     while True:
 
-        # ----------------------------------------
         # TODO:
-        # Receive packet
-        # ----------------------------------------
+        # 1a. Receive packet
+        # packet, addr(ignore) = ...
+        packet, addr = sniffer.recvfrom(65535)
 
-        # packet = ...
-
-        # ----------------------------------------
-        # TODO:
-        # Parse IP header
-        # ----------------------------------------
+        # 1b. Parse IP header
+        ip_info = parse_ip_header(packet)
 
         ip_info = None
 
-        # ----------------------------------------
-        # TODO:
-        # Determine protocol
-        # ----------------------------------------
+        # 1c. Determine protocol
+        protocol = ip_info["protocol"]
 
         tcp_info = None
         udp_info = None
         icmp_info = None
 
         # Example:
-        #
         # if protocol == TCP:
         #     tcp_info = ...
-        #
         # elif protocol == UDP:
         #     udp_info = ...
-        #
         # elif protocol == ICMP:
         #     icmp_info = ...
 
-        # ----------------------------------------
-        # TODO:
-        # Print packet information
-        # ----------------------------------------
+        if protocol == 6:
+            tcp_info = parse_tcp_header(packet, ip_info["header_length"])
+        elif protocol == 17:
+            udp_info = parse_udp_header(packet, ip_info["header_length"])
+        elif protocol == 1:
+            icmp_info = parse_icmp_header(packet, ip_info["header_length"])
 
-        # ----------------------------------------
-        # TODO:
-        # Check for suspicious activity
-        # ----------------------------------------
+        # 2. Print packet information
+        print_packet(ip_info, tcp_info, udp_info, icmp_info)
 
-        if False:
+        # 3. Check for suspicious activity
+        if detect_suspicious_activity(ip_info):
             print("\n*** WARNING: Suspicious Activity Detected ***\n")
 
 
