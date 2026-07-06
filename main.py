@@ -299,16 +299,38 @@ def print_packet(ip_info,
     print("=" * 60)
 
     # TODO:
-    # Print timestamp
+    # 1. Print timestamp
+    print("Time: ", get_current_time())
 
-    # TODO:
-    # Print protocol
+    print("--- IP Header ---")
+    # 2. Print protocol
+    print("Protocol: ", ip_info["protocol"])
 
-    # TODO:
-    # Print source/destination IP
+    # 3. Print source/destination IP
+    print("Source IP: ", ip_info["source_ip"])
+    print("Destination IP: ", ip_info["destination_ip"])
 
-    # TODO:
-    # Print TCP/UDP/ICMP information
+    print("TTL: ", ip_info["ttl"])
+
+    # 4. Print TCP/UDP/ICMP information
+    # 4a. TCP information
+    print("--- TCP Header ---")
+    print("Source Port: ", tcp_info["source_port"])
+    print("Destination Port: ", tcp_info["destination_port"])
+    print("Sequence: ", tcp_info["sequence"])
+    print("Acknowledgement: ", tcp_info["acknowledgement"])
+    print("Flags: ", tcp_info["flags"])
+
+    # 4b. UDP information
+    print("--- UDP Header ---")
+    print("Source Port: ", udp_info["source_port"])
+    print("Destination Port: ", udp_info["destination_port"])
+    print("Length: ", udp_info["length"])
+
+    # 4c. ICMP information
+    print("--- ICMP Header ---")
+    print("Type: ", icmp_info["type"])
+    print("Code: ", icmp_info["code"])
 
     print("=" * 60)
 
