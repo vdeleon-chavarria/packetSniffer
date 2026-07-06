@@ -129,16 +129,26 @@ def parse_tcp_header(packet, ip_header_length):
     }
 
     # TODO:
-    # Calculate TCP header location
+    # 1. Calculate TCP header location
+    # Google search: "to calculate TCP header you must calculate the dynamic length of the preceding IP header and add it to any prior encapsulation offsets"
+    tcp_header_start = ip_header_length    
 
     # TODO:
-    # Slice TCP header
+    # 2. Slice TCP header
+    tcp_header = packet[tcp_header_start:tcp_header_start + 20]
 
     # TODO:
-    # Unpack header
+    # 3. Unpack header
+    header_format = "!HHLLBBHHH"
+    tcp_header = struct.unpack(header_format, tcp_header)
 
     # TODO:
-    # Store values in dictionary
+    # 4. Store values in dictionary
+    tcp_info["source_port"] = tcp_header[0]
+    tcp_info["destination_port"] = tcp_header[1]
+    tcp_info["sequence"] = tcp_header[2]
+    tcp_info["acknowledgement"] = tcp_header[3]
+    tcp_info["flags"] = tcp_header[5]
 
     return tcp_info
 
