@@ -175,6 +175,20 @@ def parse_udp_header(packet, ip_header_length):
     }
 
     # TODO
+    # 1. Calculate where the UDP starts
+    udp_header_start = ip_header_length
+
+    # 2. Slice the header
+    udp_header = packet[udp_header_start:udp_header_start + 8]
+
+    # 3. Unpack the header
+    header_format = "!HHHH"
+    udp_header = struct.unpack(header_format, udp_header)
+
+    # 4. Store values in dictionary
+    udp_info["source_port"] = udp_header[0]
+    udp_info["destination_port"] = udp_header[1]
+    udp_info["length"] = udp_header[2]
 
     return udp_info
 
