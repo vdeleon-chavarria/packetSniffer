@@ -213,6 +213,19 @@ def parse_icmp_header(packet, ip_header_length):
     }
 
     # TODO
+    # 1. Calculate where the ICMP starts
+    icmp_header_start = ip_header_length
+
+    # 2. Slice the header
+    icmp_header = packet[icmp_header_start: icmp_header_start + 2]
+
+    # 3. Unpack the header
+    header_format = "!BB"
+    icmp_header = struct.unpack(header_format, icmp_header)
+
+    # 4. Store values in dictionary
+    icmp_info["type"] = icmp_header[0]
+    icmp_info["code"] = icmp_header[1]
 
     return icmp_info
 
