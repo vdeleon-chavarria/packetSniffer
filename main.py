@@ -28,7 +28,11 @@ def get_current_time():
     TODO:
         Return the current date/time as a formatted string.
     """
-    pass
+
+    current_datetime = datetime.datetime.now()
+    formatted_string = current_datetime.strftime("%A, $B %d, %Y %I:%M %p")
+    
+    return formatted_string
 
 
 # ==========================================================
@@ -65,6 +69,33 @@ def parse_ip_header(packet):
     # 1. Slice the first 20 bytes
     # 2. Unpack using struct.unpack()
     # 3. Fill in the dictionary
+
+    # 1.
+    ip_header = packet[:20]
+
+    # 2.
+    header_format = "!BBHHHBBH4s4s"
+    ip_header = struct.unpack(header_format, ip_header)
+
+    # 3.
+    # 3a Extacting
+    version = ip_header[0] >> 4
+    header_length = (ip_header[0] & 0x0F) * 4
+    ttl = ip_header[5]
+    protocol = ip_header[6]
+
+    # 3b Conversion
+    source_ip = socket.inet_ntoa(ip_header[8])
+    destination_ip = socket.inet_ntoa(ip_header[9])
+
+    # 3c Fill
+    ip_info["version"] = version
+    ip_info["header_length"] = header_length
+    ip_info["ttl"] = ttl
+    ip_info["protocol"] = protocol
+    ip_info["source_ip"] = source_ip
+    ip_info["destination_ip"] = destination_ip
+
 
     return ip_info
 
