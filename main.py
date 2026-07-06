@@ -12,11 +12,17 @@ Note:
     Running raw sockets usually requires Administrator (Windows)
     or root (Linux/macOS) privileges.
 """
+from collections import defaultdict
+import time
 
 import socket
 import struct
 import datetime
 
+
+ip_counter = defaultdict(int)
+ip_last_seen = {}
+total_packets = 0
 
 # ==========================================================
 # Helper Functions
@@ -249,7 +255,31 @@ def detect_suspicious_activity(ip_info):
     """
 
     # TODO
-    
+    # 1. Global info
+    global total_packets
+    ip = ip_info["source_ip"]
+    protocol = ip_info["protocol"]
+    now = time.time()
+
+    # 2. Count packets from same IP
+    ip_counter[ip] += 1
+    if ip_counter[ip] > 50:
+        return True
+
+    # 3. Detect repeated requests
+    if ip in ip_last_seen:
+        if now - ip_last_seen[ip] < 0.1:
+            return True
+    ip_last_seen[ip] = now
+
+    # 4. Detect uncommon protocols
+    if protocol not in [1, 6, 17]:
+        return True
+
+    # 5. Detect excessive traffic
+    total_packets += 1
+    if total_packets > 500:
+        return True
 
     return False
 
